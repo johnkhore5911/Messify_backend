@@ -5,7 +5,9 @@ const bcrpyt = require("bcryptjs");
 
 const registerUser = async (req,res) => {
     try{
-        const {name , email, password, role } = req.body;
+        // const {name , email, password, role } = req.body;
+        const { name, email, password, role, messNumber, hostelNumber, roomDetails, rollNumber } = req.body;
+
 
         if(!name || !email || !password) {
             return res.status(400).json({
@@ -39,7 +41,11 @@ const registerUser = async (req,res) => {
             name,
             email,
             password:hashedPassword,
-            role
+            role,
+            messNumber,
+            hostelNumber,
+            roomDetails,
+            rollNumber,
         })
        
         const savedUser = await newUser.save();
