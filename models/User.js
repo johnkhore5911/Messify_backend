@@ -41,6 +41,34 @@ const userSchema = new mongoose.Schema({
       image:{
         type:String,
         required:true
+      },
+      bill: {
+        type: Number,
+        default: function () {
+          return this.role === 'Student' ? 0 : undefined; // Default bill to 0 for Students
+        },
+      },
+      history: {
+        type: [Object],
+        default: [], // Default to an empty array for Students
+      },
+      todaysMeal: {
+        type: [
+          {
+            item: {
+              type: String,
+              required: true,
+            },
+            price: {
+              type: Number,
+              required: true,
+            },
+          }
+        ],
+        required: function () {
+          return this.role === 'Mess'; // Only required for Mess staff
+        },
+        default: [], // Default to an empty array for Mess staff
       }
     }, {
       timestamps: true,
