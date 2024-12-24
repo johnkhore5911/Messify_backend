@@ -8,19 +8,19 @@ exports.auth = async (req, res, next) => {
         //extract token
         const token = req.cookies.token 
                         || req.body.token 
-                        || req.header("Authorisation").replace("Bearer ", "");
+                        || req.header("Authorization").replace("Bearer ", "");
 
         //if token missing, then return response
         if(!token) {
             return res.status(401).json({
                 success:false,
-                message:'TOken is missing',
+                message:'Token is missing',
             });
         }
 
         //verify the token
         try{
-            const decode =  jwt.verify(token, process.env.JWT_SECRET);
+            const decode =  jwt.verify(token, "john");
             console.log(decode);
             req.user = decode;
         }
