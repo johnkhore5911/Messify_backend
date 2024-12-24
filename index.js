@@ -8,6 +8,9 @@ const app = express();
 //middleware to pass json request body
 app.use(express.json());
 
+const cors = require('cors');
+app.use(cors());
+
 const authRoutes = require('./routes/auth');
 app.use("/api/auth",authRoutes);
 
