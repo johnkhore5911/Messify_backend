@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: function () { return this.role === 'Student'; }, // Only required if role is Student
       },
+      image:{
+        type:String,
+        required:true
+      }
     }, {
       timestamps: true,
 })
