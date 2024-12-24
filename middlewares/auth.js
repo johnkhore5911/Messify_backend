@@ -19,19 +19,19 @@ exports.auth = async (req, res, next) => {
             });
         }
 
-        //verify the token
-        try{
-            const decode =  jwt.verify(token, "john");
-            console.log(decode);
-            req.user = decode;
-        }
-        catch(err) {
-            //verification - issue
-            return res.status(401).json({
-                success:false,
-                message:'token is invalid',
-            });
-        }
+        // //verify the token
+        // try{
+        //     const decode =  jwt.verify(token, "john");
+        //     console.log(decode);
+        //     req.user = decode;
+        // }
+        // catch(err) {
+        //     //verification - issue
+        //     return res.status(401).json({
+        //         success:false,
+        //         message:'token is invalid',
+        //     });
+        // }
         next();
     }
     catch(error) {  
