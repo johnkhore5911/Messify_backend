@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 
 //load config file
-require("dotenv").config();
-const PORT = process.env.PORT || 4000;
+// require("dotenv").config();
+// const PORT = process.env.PORT || 4000;
 
 //middleware to pass json request body
 app.use(express.json());
@@ -12,8 +12,8 @@ const authRoutes = require('./routes/auth');
 app.use("/api/auth",authRoutes);
 
 
-app.listen(PORT, ()=>{
-    console.log(`Server is started at  ${PORT} successfully`); 
+app.listen(3000, ()=>{
+    console.log(`Server is started at 3000 successfully`); 
 })
 
 //connect to the database
