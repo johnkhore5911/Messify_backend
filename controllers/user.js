@@ -5,11 +5,11 @@ const bcrpyt = require("bcryptjs");
 
 const getUserData = async (req,res) => {
     try{
-        const userId = req.user.id;
+        // const userId = req.user.id;
         res.status(200).json({
             success: true,
-            data: newCourse,
-            message: `SUCCESS USER Id is this ${userId}`,
+            // data: newCourse,
+            message: `SUCCESS USER Id is this`,
           });
     }
     catch(error){
