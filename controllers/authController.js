@@ -46,6 +46,7 @@ const registerUser = async (req,res) => {
             hostelNumber,
             roomDetails,
             rollNumber,
+      			image: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
         })
        
         const savedUser = await newUser.save();
