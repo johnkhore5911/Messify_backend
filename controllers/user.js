@@ -72,7 +72,7 @@ const updateBill = async (req, res) => {
     }
 
     // Update the user's total bill
-    user.totalBill = (user.totalBill || 0) + totalBill; // Add to the existing total bill
+    user.bill = (user.bill || 0) + totalBill; // Add to the existing total bill
     await user.save(); // Save the updated user document
 
     // Respond with the updated user data
