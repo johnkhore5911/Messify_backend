@@ -169,7 +169,7 @@ const updateTodaysMeal = async (req, res) => {
     // Fetch all students in the specified hostel
     const students = await User.find({
       hostelNumber: messNumber,
-      role: "Student",
+      // role: "Student",
     });
 
     if (students.length === 0) {
