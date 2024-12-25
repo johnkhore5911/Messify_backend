@@ -77,7 +77,17 @@ const userSchema = new mongoose.Schema({
           type: String,
           required: false,
           default: 'Bill updated'
-        }
+        },
+        items: [{
+          item: {
+            type: String,
+            required: true
+          },
+          price: {
+            type: Number,
+            required: true
+          }
+        }]
       }],
       todaysMeal: {
         type: [

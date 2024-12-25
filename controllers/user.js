@@ -85,7 +85,7 @@ const getUserDataByRoll = async (req,res) => {
 
 const updateBillAmountAndHistory = async (req,res) => {
   try{
-    const { rollNumber, totalBill } = req.body;
+    const { rollNumber, totalBill,items  } = req.body;
 
     // Find the user by roll number
     const user = await User.findOne({ rollNumber });
@@ -105,6 +105,7 @@ const updateBillAmountAndHistory = async (req,res) => {
       previousBill: user.bill,
       newBill: user.bill + totalBill,
       description: 'Bill updated due to additional charges', // Optional description
+      items: items,
     };
 
     // Update the user's bill amount
