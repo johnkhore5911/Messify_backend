@@ -13,7 +13,7 @@ router.post("/getUserDataByRoll",auth,isMessStaff,getUserDataByRoll)
 
 router.post("/updateBillAmountAndHistory",auth,isMessStaff,updateBillAmountAndHistory)
 router.post("/updateTodaysMeal",auth,isMessStaff,updateTodaysMeal);
-router.delete('/deleteTodaysMealItem/:itemId',auth,isMessStaff, deleteTodaysMealItem);
+router.delete('/deleteTodaysMealItem/:itemId/:itemName',auth,isMessStaff, deleteTodaysMealItem);
 
 
 module.exports = router;

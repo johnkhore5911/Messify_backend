@@ -332,12 +332,234 @@ const updateTodaysMeal = async (req, res) => {
 // };
 
 
+// const deleteTodaysMealItem = async (req, res) => {
+//   try {
+//     const { itemId } = req.params; // Get item ID from request parameters
+//     const {itemName} = req.params;
+//     console.log("ItemName: ",itemName)
+
+//     console.log("ItemId from mess: ",itemId);
+//     const userId = req.user.id;  // Get user ID from the authenticated user
+
+//     // Find the user (mess staff) by ID
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ success: false, message: "User not found." });
+//     }
+
+//     // Get the messNumber of the user (mess staff)
+//     const { messNumber } = user;
+
+//     // Find the students whose hostelNumber matches the messNumber of the user
+//     const students = await User.find({ hostelNumber: messNumber });
+//     console.log("Console all students: ",students);
+
+//     // if (!students || students.length === 0) {
+//     //   return res.status(404).json({
+//     //     success: false,
+//     //     message: "No students found for the specified hostel number."
+//     //   });
+//     // }
+
+//     // // Iterate through all students and remove the item from their todaysMeal array
+//     // const updatePromises = students.map(async (student) => {
+//     //   const itemIndex = student.todaysMeal.findIndex(item => item._id.toString() === itemId);
+      
+//     //   if (itemIndex !== -1) {
+//     //     student.todaysMeal.splice(itemIndex, 1);  // Remove the item
+//     //     await student.save();  // Save the updated student record
+//     //   }
+//     // });
+
+//     if (students && students.length > 0) {
+//       // Iterate through all students
+//       const updatePromises = students.map(async (student) => {
+//         // Log all item IDs in the today's meal array
+//         student.todaysMeal.forEach(item => {
+//           console.log("Item ID: ", item._id.toString());
+//         });
+    
+//         const itemIndex = student.todaysMeal.findIndex(item => item.item === itemName);
+//         console.log("Item index: ", itemIndex);
+    
+//         if (itemIndex !== -1) {
+//           student.todaysMeal.splice(itemIndex, 1);  // Remove the item
+//           await student.save();  // Save the updated student record
+//         }
+//       });
+    
+//       // Wait for all updates to complete
+//       await Promise.all(updatePromises);
+//       console.log("updatePromises", updatePromises);
+//     }
+      
+
+//     // Now, delete the item from the mess staff's todaysMeal
+//     const itemIndex = user.todaysMeal.findIndex(item => item._id.toString() === itemId);
+//     if (itemIndex !== -1) {
+//       user.todaysMeal.splice(itemIndex, 1);  // Remove the item from the mess staff's meal
+//       await user.save();  // Save the updated mess staff record
+//     }
+
+//     // Return success response
+//     return res.status(200).json({
+//       success: true,
+//       message: "Item deleted successfully from today's meal for all students and the mess staff."
+//     });
+//   } catch (error) {
+//     console.error("Error deleting item from today's meal:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error. Please try again later.",
+//     });
+//   }
+// };
+
+
+// const deleteTodaysMealItem = async (req, res) => {
+//   try {
+//     const { itemName } = req.params; // Get itemName from request parameters
+//     console.log("ItemName: ", itemName);
+
+//     const userId = req.user.id; // Get user ID from the authenticated user
+
+//     // Find the mess staff user by ID
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ success: false, message: "User not found." });
+//     }
+
+//     // Get the messNumber of the user (mess staff)
+//     const { messNumber } = user;
+
+//     // Find the students whose hostelNumber matches the messNumber of the user
+//     const students = await User.find({ hostelNumber: messNumber });
+//     console.log("All students in the hostel: ", students);
+
+//     if (students && students.length > 0) {
+//       // Iterate through all students to remove the specified item
+//       const updatePromises = students.map(async (student) => {
+//         const itemIndex = student.todaysMeal.findIndex(item => item.item === itemName);
+//         console.log(`Student: ${student.name}, Item index: ${itemIndex}`);
+        
+//         if (itemIndex !== -1) {
+//           student.todaysMeal.splice(itemIndex, 1); // Remove the item
+//           await student.save(); // Save the updated student record
+//         }
+//       });
+
+//       // Wait for all updates to complete
+//       await Promise.all(updatePromises);
+//       console.log("Updated meal data for all students.");
+//     }
+
+//     // Now, delete the item from the mess staff's todaysMeal
+//     const itemIndexForStaff = user.todaysMeal.findIndex(item => item.item === itemName);
+//     if (itemIndexForStaff !== -1) {
+//       user.todaysMeal.splice(itemIndexForStaff, 1); // Remove the item from the mess staff's meal
+//       await user.save(); // Save the updated mess staff record
+//     }
+
+//     // Return success response
+//     return res.status(200).json({
+//       success: true,
+//       message: "Item deleted successfully from today's meal for all students and the mess staff."
+//     });
+//   } catch (error) {
+//     console.error("Error deleting item from today's meal:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error. Please try again later.",
+//     });
+//   }
+// };
+
+// const deleteTodaysMealItem = async (req, res) => {
+//   try {
+//     const { itemName } = req.params; // Get itemName from request parameters
+//     console.log("ItemName: ", itemName);
+
+//     const userId = req.user.id; // Get user ID from the authenticated user
+
+//     // Find the mess staff user by ID
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ success: false, message: "User not found." });
+//     }
+
+//     // Get the messNumber of the user (mess staff)
+//     const { messNumber } = user;
+
+//     // If mess staff's todaysMeal has only one item, clear it directly
+//     if (user.todaysMeal.length === 1) {
+//       user.todaysMeal = []; // Clear the array
+//       await user.save(); // Save the updated mess staff record
+
+//       // Find all students in the same hostel
+//       const students = await User.find({ hostelNumber: messNumber });
+//       if (students && students.length > 0) {
+//         const updatePromises = students.map(async (student) => {
+//           student.todaysMeal = []; // Clear the array for each student
+//           await student.save(); // Save the updated student record
+//         });
+
+//         await Promise.all(updatePromises); // Wait for all updates to complete
+//       }
+
+//       // Return success response
+//       return res.status(200).json({
+//         success: true,
+//         message: "All items deleted successfully from today's meal for mess and students.",
+//       });
+//     }
+//     console.log("first")
+
+//     // For cases where todaysMeal has more than one item
+//     // Find all students in the same hostel
+//     const students = await User.find({ hostelNumber: messNumber });
+//     console.log("students: ",students)
+//     if (students && students.length > 0) {
+//       const updatePromises = students.map(async (student) => {
+//         const itemIndex = student.todaysMeal.findIndex((item) => item.item === itemName);
+//         console.log("itemIndex: ",itemIndex)
+//         if (itemIndex !== -1) {
+//           student.todaysMeal.splice(itemIndex, 1); // Remove the item
+//           await student.save(); // Save the updated student record
+//         }
+//       });
+
+//       await Promise.all(updatePromises); // Wait for all updates to complete
+//     }
+
+//     // Remove the item from the mess staff's todaysMeal
+//     const itemIndexForStaff = user.todaysMeal.findIndex((item) => item.item === itemName);
+//     if (itemIndexForStaff !== -1) {
+//       user.todaysMeal.splice(itemIndexForStaff, 1); // Remove the item
+//       await user.save(); // Save the updated mess staff record
+//     }
+
+//     // Return success response
+//     return res.status(200).json({
+//       success: true,
+//       message: "Item deleted successfully from today's meal for all students and the mess staff.",
+//     });
+//   } catch (error) {
+//     console.error("Error deleting item from today's meal:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error. Please try again later.",
+//     });
+//   }
+// };
+
 const deleteTodaysMealItem = async (req, res) => {
   try {
-    const { itemId } = req.params; // Get item ID from request parameters
-    const userId = req.user.id;  // Get user ID from the authenticated user
+    const { itemName } = req.params; // Get itemName from request parameters
+    console.log("ItemName: ", itemName);
 
-    // Find the user (mess staff) by ID
+    const userId = req.user.id; // Get user ID from the authenticated user
+
+    // Find the mess staff user by ID
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found." });
@@ -346,52 +568,35 @@ const deleteTodaysMealItem = async (req, res) => {
     // Get the messNumber of the user (mess staff)
     const { messNumber } = user;
 
-    // Find the students whose hostelNumber matches the messNumber of the user
+    // Remove the item from the mess staff's todaysMeal
+    const itemIndexForStaff = user.todaysMeal.findIndex((item) => item.item === itemName);
+    if (itemIndexForStaff !== -1) {
+      user.todaysMeal.splice(itemIndexForStaff, 1); // Remove the item
+      await user.save(); // Save the updated mess staff record
+      console.log(`Item "${itemName}" removed from mess staff's todaysMeal.`);
+    } else {
+      console.log(`Item "${itemName}" not found in mess staff's todaysMeal.`);
+    }
+
+    // Find students in the same hostel
     const students = await User.find({ hostelNumber: messNumber });
-
-    // if (!students || students.length === 0) {
-    //   return res.status(404).json({
-    //     success: false,
-    //     message: "No students found for the specified hostel number."
-    //   });
-    // }
-
-    // // Iterate through all students and remove the item from their todaysMeal array
-    // const updatePromises = students.map(async (student) => {
-    //   const itemIndex = student.todaysMeal.findIndex(item => item._id.toString() === itemId);
-      
-    //   if (itemIndex !== -1) {
-    //     student.todaysMeal.splice(itemIndex, 1);  // Remove the item
-    //     await student.save();  // Save the updated student record
-    //   }
-    // });
-
-    if (students || !students.length === 0) {
-      // Iterate through all students and remove the item from their todaysMeal array
+    if (students && students.length > 0) {
       const updatePromises = students.map(async (student) => {
-        const itemIndex = student.todaysMeal.findIndex(item => item._id.toString() === itemId);
-        
+        const itemIndex = student.todaysMeal.findIndex((item) => item.item === itemName);
         if (itemIndex !== -1) {
-          student.todaysMeal.splice(itemIndex, 1);  // Remove the item
-          await student.save();  // Save the updated student record
+          student.todaysMeal.splice(itemIndex, 1); // Remove the item
+          await student.save(); // Save the updated student record
+          console.log(`Item "${itemName}" removed from student "${student.name}"'s todaysMeal.`);
         }
       });
-      // Wait for all updates to complete
-      await Promise.all(updatePromises);
-    }
-      
 
-    // Now, delete the item from the mess staff's todaysMeal
-    const itemIndex = user.todaysMeal.findIndex(item => item._id.toString() === itemId);
-    if (itemIndex !== -1) {
-      user.todaysMeal.splice(itemIndex, 1);  // Remove the item from the mess staff's meal
-      await user.save();  // Save the updated mess staff record
+      await Promise.all(updatePromises); // Wait for all updates to complete
     }
 
     // Return success response
     return res.status(200).json({
       success: true,
-      message: "Item deleted successfully from today's meal for all students and the mess staff."
+      message: `Item "${itemName}" deleted successfully from today's meal for the mess staff and students.`,
     });
   } catch (error) {
     console.error("Error deleting item from today's meal:", error);
@@ -401,6 +606,7 @@ const deleteTodaysMealItem = async (req, res) => {
     });
   }
 };
+
 
 
 
