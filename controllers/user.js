@@ -83,7 +83,7 @@ const getUserDataByRoll = async (req,res) => {
 }
 
 
-const updateBill = async (req,res) => {
+const updateBillAmountAndHistory = async (req,res) => {
   try{
     const { rollNumber, totalBill } = req.body;
 
@@ -97,8 +97,19 @@ const updateBill = async (req,res) => {
       });
     }
 
+    // Add a new entry to the history array
+    const billUpdateHistory = {
+      action: 'Bill Updated',
+      date: new Date(),
+      amount: totalBill,
+      previousBill: user.bill,
+      newBill: user.bill + totalBill,
+    };
+
     // Update the user's bill amount
     user.bill += totalBill;
+
+    user.history.push(billUpdateHistory);
 
     // Save the updated user document
     await user.save();
@@ -192,5 +203,5 @@ const updateTodaysMeal = async (req, res) => {
   }
 };
 
-module.exports = { getUserData,getUserDataByRoll,updateBill,updateTodaysMeal };
+module.exports = { getUserData,getUserDataByRoll,updateBillAmountAndHistory,updateTodaysMeal };
 
