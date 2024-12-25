@@ -48,10 +48,37 @@ const userSchema = new mongoose.Schema({
           return this.role === 'Student' ? 0 : undefined; // Default bill to 0 for Students
         },
       },
-      history: {
-        type: [Object],
-        default: [], // Default to an empty array for Students
-      },
+      // history: {
+      //   type: [Object],
+      //   default: [], // Default to an empty array for Students
+      // },
+      history: [{
+        action: {
+          type: String, 
+          required: true
+        },
+        date: {
+          type: Date,
+          default: Date.now, // Default to the current date if not provided
+        },
+        amount: {
+          type: Number,
+          required: true
+        },
+        previousBill: {
+          type: Number,
+          required: true
+        },
+        newBill: {
+          type: Number,
+          required: true
+        },
+        description: {
+          type: String,
+          required: false,
+          default: 'Bill updated'
+        }
+      }],
       todaysMeal: {
         type: [
           {

@@ -104,6 +104,7 @@ const updateBillAmountAndHistory = async (req,res) => {
       amount: totalBill,
       previousBill: user.bill,
       newBill: user.bill + totalBill,
+      description: 'Bill updated due to additional charges', // Optional description
     };
 
     // Update the user's bill amount
