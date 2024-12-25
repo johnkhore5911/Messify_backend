@@ -28,7 +28,6 @@
 // app.get("/",(req,res)=>{
 //     res.send(`<h1>This is HOMEPAGE</h1>`)
 // })
-
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -39,9 +38,16 @@ const app = express();
 const server = http.createServer(app);
 
 // Initialize socket.io and associate it with the server
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",  // Allow all origins (use specific domains for production)
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
+});
 
-// Middleware to pass json request body
+// Middleware to pass JSON request body
 app.use(express.json());
 
 // Enable CORS for cross-origin requests
@@ -65,6 +71,9 @@ app.get("/trigger", (req, res) => {
 // Set up a connection event for Socket.IO
 io.on('connection', (socket) => {
     console.log('A user connected');
+
+    // Emit a welcome message to the newly connected client
+    socket.emit('message', 'Welcome to the Socket.IO server!');
 
     // Listen for disconnect event
     socket.on('disconnect', () => {
