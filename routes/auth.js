@@ -1,16 +1,18 @@
 const express = require("express");
 const {registerUser, loginUser} = require("../controllers/authController")
-const {getUserData} = require("../controllers/user")
+const {getUserData,getUserDataByRoll} = require("../controllers/user")
 const {updateBill,updateTodaysMeal} = require("../controllers/user")
 
 const router = express.Router();
-const {auth}  = require("../middlewares/auth");
+const {auth,isMessStaff}  = require("../middlewares/auth");
 
 router.post("/register",registerUser);
 router.post("/login",loginUser);
-router.post("/getUserData",getUserData)
-router.post("/updateBillAmount",updateBill)
-router.post("/updateTodaysMeal",updateTodaysMeal);
+router.get("/getUserData",auth,getUserData)
+router.post("/getUserDataByRoll",auth,isMessStaff,getUserDataByRoll)
+
+router.post("/updateBillAmount",auth,isMessStaff,updateBill)
+router.post("/updateTodaysMeal",auth,isMessStaff,updateTodaysMeal);
 
 
 module.exports = router;
