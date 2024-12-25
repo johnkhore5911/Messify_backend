@@ -143,7 +143,14 @@ const updateTodaysMeal = async (req, res) => {
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found." });
     }
+    // Update the mess staff's (user's) today's meal as well
+    user.todaysMeal = items.map((item) => ({
+      item: item.itemName,
+      price: item.price,
+    }));
 
+    await user.save();
+    
     // Extract hostelNumber from the user
     const { messNumber } = user;
 
