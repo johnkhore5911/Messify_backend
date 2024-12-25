@@ -292,5 +292,118 @@ const updateTodaysMeal = async (req, res) => {
 };
 
 
-module.exports = { getUserData,getUserDataByRoll,updateBillAmountAndHistory,updateTodaysMeal };
+// const deleteTodaysMealItem = async (req, res) => {
+//   try {
+//     const { itemId } = req.params; // Get item ID from request parameters
+//     const userId = req.user.id;  // Get user ID from the authenticated user
+
+//     // Find the user (mess staff) by ID
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ success: false, message: "User not found." });
+//     }
+
+//     // Find the specific item to delete
+//     const itemIndex = user.todaysMeal.findIndex(item => item._id.toString() === itemId);
+
+//     // If item doesn't exist
+//     if (itemIndex === -1) {
+//       return res.status(404).json({ success: false, message: "Item not found in today's meal." });
+//     }
+
+//     // Remove the item from the array
+//     user.todaysMeal.splice(itemIndex, 1);
+
+//     // Save the updated user record
+//     await user.save();
+
+//     // Return success response
+//     return res.status(200).json({
+//       success: true,
+//       message: "Item deleted successfully from today's meal."
+//     });
+//   } catch (error) {
+//     console.error("Error deleting item from today's meal:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error. Please try again later.",
+//     });
+//   }
+// };
+
+
+const deleteTodaysMealItem = async (req, res) => {
+  try {
+    const { itemId } = req.params; // Get item ID from request parameters
+    const userId = req.user.id;  // Get user ID from the authenticated user
+
+    // Find the user (mess staff) by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
+    // Get the messNumber of the user (mess staff)
+    const { messNumber } = user;
+
+    // Find the students whose hostelNumber matches the messNumber of the user
+    const students = await User.find({ hostelNumber: messNumber });
+
+    // if (!students || students.length === 0) {
+    //   return res.status(404).json({
+    //     success: false,
+    //     message: "No students found for the specified hostel number."
+    //   });
+    // }
+
+    // // Iterate through all students and remove the item from their todaysMeal array
+    // const updatePromises = students.map(async (student) => {
+    //   const itemIndex = student.todaysMeal.findIndex(item => item._id.toString() === itemId);
+      
+    //   if (itemIndex !== -1) {
+    //     student.todaysMeal.splice(itemIndex, 1);  // Remove the item
+    //     await student.save();  // Save the updated student record
+    //   }
+    // });
+
+    if (students || !students.length === 0) {
+      // Iterate through all students and remove the item from their todaysMeal array
+      const updatePromises = students.map(async (student) => {
+        const itemIndex = student.todaysMeal.findIndex(item => item._id.toString() === itemId);
+        
+        if (itemIndex !== -1) {
+          student.todaysMeal.splice(itemIndex, 1);  // Remove the item
+          await student.save();  // Save the updated student record
+        }
+      });
+      // Wait for all updates to complete
+      await Promise.all(updatePromises);
+    }
+      
+
+    // Now, delete the item from the mess staff's todaysMeal
+    const itemIndex = user.todaysMeal.findIndex(item => item._id.toString() === itemId);
+    if (itemIndex !== -1) {
+      user.todaysMeal.splice(itemIndex, 1);  // Remove the item from the mess staff's meal
+      await user.save();  // Save the updated mess staff record
+    }
+
+    // Return success response
+    return res.status(200).json({
+      success: true,
+      message: "Item deleted successfully from today's meal for all students and the mess staff."
+    });
+  } catch (error) {
+    console.error("Error deleting item from today's meal:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error. Please try again later.",
+    });
+  }
+};
+
+
+
+
+module.exports = { getUserData,getUserDataByRoll,updateBillAmountAndHistory,updateTodaysMeal,deleteTodaysMealItem };
 
