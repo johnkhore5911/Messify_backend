@@ -131,26 +131,111 @@ const updateBillAmountAndHistory = async (req,res) => {
   }
 }
 
+// const updateTodaysMeal = async (req, res) => {
+//   try {
+//     const { items } = req.body;
+
+//     const userId = req.user.id;
+
+//     // Find the user by ID
+//     const user = await User.findById(userId);
+
+//     if (!user) {
+//       return res.status(404).json({ success: false, message: "User not found." });
+//     }
+//     // Update the mess staff's (user's) today's meal as well
+//     user.todaysMeal = items.map((item) => ({
+//       item: item.itemName,
+//       price: item.price,
+//     }));
+
+//     await user.save();
+    
+//     // Extract hostelNumber from the user
+//     const { messNumber } = user;
+
+//     if (!messNumber) {
+//       return res.status(400).json({ success: false, message: "User does not belong to a hostel." });
+//     }
+
+//     // Validate input
+//     if (!messNumber || !items || !Array.isArray(items)) {
+//       return res.status(400).json({ success: false, message: "Invalid input." });
+//     }
+
+//     // Check that all items have the required structure
+//     for (const item of items) {
+//       if (!item.itemName || !item.price) {
+//         return res.status(400).json({
+//           success: false,
+//           message: "Each item must have 'itemName' and 'price'.",
+//         });
+//       }
+//     }
+
+//     // Fetch all students in the specified hostel
+//     const students = await User.find({
+//       hostelNumber: messNumber,
+//       // role: "Student",
+//     });
+
+//     if (students.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "No students found for the specified hostel number.",
+//       });
+//     }
+
+//     // Update today's meal for each student
+//     const updatePromises = students.map((student) => {
+//       student.todaysMeal = items.map((item) => ({
+//         item: item.itemName,
+//         price: item.price,
+//       }));
+//       return student.save();
+//     });
+
+//     // Wait for all updates to complete
+//     await Promise.all(updatePromises);
+
+//     // Respond with success
+//     return res.status(200).json({
+//       success: true,
+//       message: "Today's meal updated successfully for all students in the specified hostel.",
+//     });
+//   } catch (error) {
+//     console.error("Error updating today's meal:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error. Please try again later.",
+//     });
+//   }
+// };
+
 const updateTodaysMeal = async (req, res) => {
   try {
     const { items } = req.body;
 
     const userId = req.user.id;
 
-    // Find the user by ID
+    // Find the user (mess staff) by ID
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found." });
     }
-    // Update the mess staff's (user's) today's meal as well
-    user.todaysMeal = items.map((item) => ({
+
+    // Append new items to the mess staff's (user's) today's meal
+    const newMeals = items.map((item) => ({
       item: item.itemName,
       price: item.price,
     }));
 
+    // Push new meals into the existing array (if any)
+    user.todaysMeal = [...user.todaysMeal, ...newMeals]; // This will append the new meals
+
     await user.save();
-    
+
     // Extract hostelNumber from the user
     const { messNumber } = user;
 
@@ -174,10 +259,7 @@ const updateTodaysMeal = async (req, res) => {
     }
 
     // Fetch all students in the specified hostel
-    const students = await User.find({
-      hostelNumber: messNumber,
-      // role: "Student",
-    });
+    const students = await User.find({ hostelNumber: messNumber });
 
     if (students.length === 0) {
       return res.status(404).json({
@@ -188,10 +270,7 @@ const updateTodaysMeal = async (req, res) => {
 
     // Update today's meal for each student
     const updatePromises = students.map((student) => {
-      student.todaysMeal = items.map((item) => ({
-        item: item.itemName,
-        price: item.price,
-      }));
+      student.todaysMeal = [...student.todaysMeal, ...newMeals]; // Append new meals to existing ones
       return student.save();
     });
 
@@ -201,7 +280,7 @@ const updateTodaysMeal = async (req, res) => {
     // Respond with success
     return res.status(200).json({
       success: true,
-      message: "Today's meal updated successfully for all students in the specified hostel.",
+      message: "Today's meal updated successfully for all students and the mess staff.",
     });
   } catch (error) {
     console.error("Error updating today's meal:", error);
@@ -211,6 +290,7 @@ const updateTodaysMeal = async (req, res) => {
     });
   }
 };
+
 
 module.exports = { getUserData,getUserDataByRoll,updateBillAmountAndHistory,updateTodaysMeal };
 
